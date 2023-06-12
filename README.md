@@ -17,10 +17,21 @@
     > Room Stats (UserCount, Length)
     > Room Permissions (AllowedVideoOn, AllowedSendMessages)
 
+## Installation 
+Clone this repository.
+
+Run:  
+
+~~~
+./gradlww bootRun
+~~~
+
+### Test
 
 To curl backend in Windows Terminal use:
 
+```
 curl localhost:8080/accounts
-
+```
 
 

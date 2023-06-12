@@ -15,9 +15,11 @@ class LoadDatabase {
     private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
 
     @Bean
-    CommandLineRunner initDatabase(AccountRepository repository) {
+    CommandLineRunner initDatabase(AccountRepository accountRepository, RoomRepository roomRepository) {
         return args -> {
-            log.info("Preloading " + repository.save(new Account("louis@gmail.com", "Louis", "Sullvian", "lsullivan1", new Locale("en", "IE"), LocalDate.of(2001, 5, 16))));
+            log.info("Preloading " + accountRepository.save(new Account("louis@gmail.com", "Louis", "Sullvian", "lsullivan1", new Locale("en", "IE"), LocalDate.of(2001, 5, 16))));
+            log.info("Preloading " + roomRepository.save(new Room("Peanut Butter","1")));
+
         };
     }
 }

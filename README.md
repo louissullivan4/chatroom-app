@@ -18,5 +18,9 @@
     > Room Permissions (AllowedVideoOn, AllowedSendMessages)
 
 
+To curl backend in Windows Terminal use:
+
+curl localhost:8080/accounts
+
 
 

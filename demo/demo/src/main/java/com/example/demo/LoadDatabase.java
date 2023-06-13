@@ -18,6 +18,7 @@ class LoadDatabase {
     CommandLineRunner initDatabase(AccountRepository accountRepository, RoomRepository roomRepository) {
         return args -> {
             log.info("Preloading " + accountRepository.save(new Account("louis@gmail.com", "Louis", "Sullvian", "lsullivan1", new Locale("en", "IE"), LocalDate.of(2001, 5, 16))));
+            log.info("Preloading " + accountRepository.save(new Account("bob@gmail.com", "Bob", "Dylan", "bdylan1", new Locale("en", "IE"), LocalDate.of(1960, 1, 1))));
             log.info("Preloading " + roomRepository.save(new Room("Peanut Butter","1")));
 
         };

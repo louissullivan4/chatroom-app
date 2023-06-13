@@ -8,6 +8,7 @@ import com.example.demo.errors.server.RoomNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
 @RestController
 class AppController {
     private final AccountRepository accountRepository;
@@ -30,18 +31,14 @@ class AppController {
                 .orElseThrow(() -> new AccountNotFoundException(id));
     }
 
-        // Get all accounts
     @GetMapping("/rooms")
     List<Room> allRooms() {
         return roomRepository.findAll();
     }
 
-    // Get one account by ID
     @GetMapping("/rooms/{id}")
     Room oneRoom(@PathVariable Long id) {
         return roomRepository.findById(id)
                 .orElseThrow(() -> new RoomNotFoundException(id));
     }
-
-
 }

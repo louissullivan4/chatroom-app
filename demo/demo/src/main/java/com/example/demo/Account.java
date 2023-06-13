@@ -1,9 +1,13 @@
 package com.example.demo;
 
+import com.example.demo.errors.server.AccountNotFoundException;
 import jakarta.persistence.*;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -109,5 +113,18 @@ class Account {
         return "{" + "uid=" + this.id + ", email='" + this.email + '\'' + ", firstName='" + this.firstName + '\'' +
                 ", lastName='" + this.lastName + '\'' + ", username='" + this.username + '\'' + ", country='" +
                 this.country + '\'' + ", dob='" + this.dob + '\'' + '}';
+    }
+
+    // Create new account or update details by parsing json values to strings and locale and localdate types
+    public Account newAccountDetails(@RequestBody Map<Object, String> request){
+        this.setEmail(request.get("email"));
+        this.setFirstName(request.get("firstName"));
+        this.setLastName(request.get("lastName"));
+        this.setUsername(request.get("username"));
+        this.setCountry(new Locale(request.get("country").split("_")[0], request.get("country").split("_")[1]));
+        this.setDob(LocalDate.of(Integer.parseInt(request.get("dob").split("_")[0]),
+                Integer.parseInt(request.get("dob").split("_")[1]),
+                Integer.parseInt(request.get("dob").split("_")[2])));
+        return this;
     }
 }

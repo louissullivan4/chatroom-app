@@ -1,0 +1,9 @@
+1. Get all rooms
+curl localhost:8080/rooms
+
+2. Get room with id 1
+curl localhost:8080/rooms/1
+
+3. Get account with id 2, it will return a not found exception
+curl localhost:8080/rooms/2
+

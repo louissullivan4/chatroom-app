@@ -21,7 +21,6 @@
 Clone this repository.
 
 Run:  
-
 ~~~
 ./gradlww bootRun
 ~~~

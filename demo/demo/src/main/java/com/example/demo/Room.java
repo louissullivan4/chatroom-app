@@ -1,13 +1,36 @@
 package com.example.demo;
 
+import com.example.demo.errors.server.RequestMissingParameterException;
 import jakarta.persistence.*;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
 class Room {
+    private @Id @GeneratedValue Long id;
+    private @Column String topic;    
+    private @Column String hostId;    
+
+    Room(String topic, String hostId) {
+        this.topic = topic;
+        this.hostId = hostId;
+    }
+
+    public void setRoomsDetails(@RequestBody Map<Object, String> request) throws RequestMissingParameterException {
+        if (request.get("hostId") == null) {
+            throw new RequestMissingParameterException("hostId");
+        }
+        if (request.get("topic") == null) {
+            throw new RequestMissingParameterException("topic");
+        }
+        this.setHostId(request.get("hostId"));
+        this.setTopic(request.get("topic"));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -28,15 +51,6 @@ class Room {
                 ", topic='" + topic + '\'' +
                 ", hostId='" + hostId + '\'' +
                 '}';
-    }
-
-    private @Id @GeneratedValue Long id;
-    private @Column String topic;    
-    private @Column String hostId;    
-
-    Room(String topic, String hostId) {
-        this.topic = topic;
-        this.hostId = hostId;
     }
 
     public Long getId() {

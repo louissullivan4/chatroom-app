@@ -20,7 +20,7 @@ class Room {
         this.hostId = hostId;
     }
 
-    public void setRoomsDetails(@RequestBody Map<Object, String> request) throws RequestMissingParameterException {
+    public Room setRoomsDetails(@RequestBody Map<Object, String> request) throws RequestMissingParameterException {
         if (request.get("hostId") == null) {
             throw new RequestMissingParameterException("hostId");
         }
@@ -29,6 +29,7 @@ class Room {
         }
         this.setHostId(request.get("hostId"));
         this.setTopic(request.get("topic"));
+        return this;
     }
 
     @Override

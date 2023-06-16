@@ -69,4 +69,30 @@ class AppController {
         return roomRepository.findById(id)
                 .orElseThrow(() -> new RoomNotFoundException(id));
     }
+
+    @PostMapping("/rooms")
+    Room newRoom(@RequestBody Map<Object, String> request) {
+        Room room = new Room();
+        room.setRoomsDetails(request);
+        roomRepository.save(room);
+        return room;
+    }
+
+    @PutMapping("/rooms/{id}")
+    Room updateRoom(@RequestBody Map<Object, String> request, @PathVariable Long id) throws RoomNotFoundException {
+        if (roomRepository.findById(id).isEmpty()) {
+            throw new RoomNotFoundException(id);
+        } else {
+            Room room = roomRepository.findById(id).get();
+            room.setRoomsDetails(request);
+            roomRepository.save(room);
+            return room;
+        }
+    }
+
+    @DeleteMapping("/rooms/{id}")
+    void deleteRoom(@PathVariable Long id) {
+        roomRepository.deleteById(id);
+    }
+
 }

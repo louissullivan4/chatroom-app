@@ -1,8 +1,6 @@
-package com.example.demo;
+package com.example.demo.model;
 
-import com.example.demo.errors.server.AccountNotFoundException;
 import jakarta.persistence.*;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
@@ -11,7 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Entity
-class Account {
+public class Account {
     private @Id @GeneratedValue Long id;
     private @Column String email;
     private @Column String firstName;
@@ -20,7 +18,7 @@ class Account {
     private @Column Locale country;
     private @Column LocalDate dob;
 
-    Account(String email, String firstName, String lastName, String username, Locale country, LocalDate dob) {
+    public Account(String email, String firstName, String lastName, String username, Locale country, LocalDate dob) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;

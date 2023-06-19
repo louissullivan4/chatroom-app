@@ -1,21 +1,19 @@
-package com.example.demo;
+package com.example.demo.model;
 
 import com.example.demo.errors.server.RequestMissingParameterException;
 import jakarta.persistence.*;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.time.LocalDate;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
 @Entity
-class Room {
+public class Room {
     private @Id @GeneratedValue Long id;
     private @Column String topic;    
-    private @Column String hostId;    
+    private @Column String hostId;
 
-    Room(String topic, String hostId) {
+    public Room(String topic, String hostId) {
         this.topic = topic;
         this.hostId = hostId;
     }

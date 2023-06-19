@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.model;
 
 import com.example.demo.errors.server.RequestMissingParameterException;
 import jakarta.persistence.*;
@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.Map;
 
 @Entity
-class Message {
+public class Message {
     private @Id
     @GeneratedValue Long id;
     private @Column String content;
     private @Column Long accountId;
     private @Column Long roomId;
 
-    Message(String content, Long accountId, Long roomId) {
+    public Message(String content, Long accountId, Long roomId) {
         this.content = content;
         this.accountId = accountId;
         this.roomId = roomId;

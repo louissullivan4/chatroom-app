@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.errors.server.RequestMissingParameterException;
+import com.example.demo.model.Room;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

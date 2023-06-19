@@ -1,5 +1,11 @@
 package com.example.demo;
 
+import com.example.demo.model.Account;
+import com.example.demo.model.Message;
+import com.example.demo.model.Room;
+import com.example.demo.repository.RoomRepository;
+import com.example.demo.repository.AccountRepository;
+import com.example.demo.repository.MessageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -23,7 +29,6 @@ class LoadDatabase {
             log.info("Preloading " + roomRepository.save(new Room("Jelly","2")));
             log.info("Preloading " + msgRepository.save(new Message("Hey Friend!", 2L, 2L)));
             log.info("Preloading " + msgRepository.save(new Message("This rocks!", 2L, 2L)));
-
         };
     }
 }

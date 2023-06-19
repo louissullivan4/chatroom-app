@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.*;
 class AppController {
     private final AccountRepository accountRepository;
     private final RoomRepository roomRepository;
-    AppController(AccountRepository accountRepository, RoomRepository roomRepository) {
+    private final MessageRepository msgRepository;
+
+    AppController(AccountRepository accountRepository, RoomRepository roomRepository, MessageRepository msgRepository) {
         this.accountRepository = accountRepository;
         this.roomRepository = roomRepository;
+        this.msgRepository = msgRepository;
     }
 
     // Get all accounts
@@ -93,6 +96,28 @@ class AppController {
     @DeleteMapping("/rooms/{id}")
     void deleteRoom(@PathVariable Long id) {
         roomRepository.deleteById(id);
+    }
+
+
+    // New Message Sent
+    @PostMapping("/messages")
+    Message createMessage(@RequestBody Map<Object, String> request) {
+        Message message = new Message();
+        message.setMessageDetails(request);
+        msgRepository.save(message);
+        return message;
+    }
+
+    // Get all messages in a room
+    @GetMapping("/rooms/{id}/messages")
+    List<Message> allRoomMessages(@PathVariable Long id) {
+        return msgRepository.findByRoomId(id);
+    }
+
+    // Get all messages sent by a user
+    @GetMapping("/accounts/{id}/messages")
+    List<Message> allAccountMessages(@PathVariable Long id) {
+        return msgRepository.findByAccountId(id);
     }
 
 }

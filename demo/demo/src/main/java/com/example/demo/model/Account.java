@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.errors.server.RequestMissingParameterException;
 import jakarta.persistence.*;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -114,7 +115,25 @@ public class Account {
     }
 
     // Create new account or update details by parsing json values to strings and locale and localdate types
-    public Account newAccountDetails(@RequestBody Map<Object, String> request){
+    public Account newAccountDetails(@RequestBody Map<Object, String> request) throws RequestMissingParameterException {
+        if (request.get("email") == null) {
+            throw new RequestMissingParameterException("email");
+        }
+        if (request.get("firstName") == null) {
+            throw new RequestMissingParameterException("firstName");
+        }
+        if (request.get("lastName") == null) {
+            throw new RequestMissingParameterException("lastName");
+        }
+        if (request.get("username") == null) {
+            throw new RequestMissingParameterException("username");
+        }
+        if (request.get("country") == null) {
+            throw new RequestMissingParameterException("country");
+        }
+        if (request.get("dob") == null) {
+            throw new RequestMissingParameterException("dob");
+        }
         this.setEmail(request.get("email"));
         this.setFirstName(request.get("firstName"));
         this.setLastName(request.get("lastName"));

@@ -120,7 +120,7 @@ public class Account {
 
     @Override
     public String toString() {
-        return "{" + "uid=" + this.id + ", email='" + this.email + '\'' + ", firstName='" + this.firstName + '\'' +
+        return "{" + "id=" + this.id + ", email='" + this.email + '\'' + ", firstName='" + this.firstName + '\'' +
                 ", lastName='" + this.lastName + '\'' + ", username='" + this.username + '\'' + ", country='" +
                 this.country + '\'' + ", dob='" + this.dob + '\'' + ", location='" + this.location + '\'' + '}';
     }
@@ -156,7 +156,9 @@ public class Account {
         this.setDob(LocalDate.of(Integer.parseInt(request.get("dob").split("_")[0]),
                 Integer.parseInt(request.get("dob").split("_")[1]),
                 Integer.parseInt(request.get("dob").split("_")[2])));
-        this.setLocation(new Location(request.get("locationName"), Double.parseDouble(request.get("latitude")), Double.parseDouble(request.get("longitude"))));
+        this.setLocation(new Location(request.get("location").split(" ")[0],
+                Double.parseDouble(request.get("location").split(" ")[1]),
+                Double.parseDouble(request.get("location").split(" ")[2])));
         return this;
     }
 }

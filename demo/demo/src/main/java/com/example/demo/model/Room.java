@@ -31,7 +31,9 @@ public class Room {
         }
         this.setHostId(request.get("hostId"));
         this.setTopic(request.get("topic"));
-        this.setLocation(new Location(request.get("locationName"), Double.parseDouble(request.get("latitude")), Double.parseDouble(request.get("longitude"))));
+        this.setLocation(new Location(request.get("location").split(" ")[0],
+                Double.parseDouble(request.get("location").split(" ")[1]),
+                Double.parseDouble(request.get("location").split(" ")[2])));
         return this;
     }
 
@@ -54,6 +56,7 @@ public class Room {
                 "id=" + id +
                 ", topic='" + topic + '\'' +
                 ", hostId='" + hostId + '\'' +
+                ", location='" + location + '\'' +
                 '}';
     }
 
@@ -90,7 +93,6 @@ public class Room {
     }
 
     public Room() {}
-
 }
 
 

@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.model.Account;
+import com.example.demo.model.Location;
 import com.example.demo.repository.AccountRepository;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ public class AccountControllerTests {
 
     @Test
     public void oneAccountShouldCallRepository() throws Exception {
-        when(accountRepository.findById(1L)).thenReturn(Optional.of(new Account("test@gmail.com", "Cian", "McDonald", "user1", new Locale("en", "IE"), LocalDate.of(2001, 5, 16))));
+        when(accountRepository.findById(1L)).thenReturn(Optional.of(new Account("test@gmail.com", "Cian", "McDonald", "user1", new Locale("en", "IE"), LocalDate.of(2001, 5, 16), new Location("Dublin_IE", 53.3331, -6.2489))));
         this.mockMvc.perform(MockMvcRequestBuilders.get("/accounts/1")).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.username").value("user1"));
     }
 
@@ -51,27 +52,28 @@ public class AccountControllerTests {
 
     @Test
     public void newAccountShouldCreateAccount() throws Exception {
-        Account account = new Account("amy@gmail.com", "Amy", "Murphy", "amurphy1", new Locale("en", "IE"), LocalDate.of(1980, 1, 1));
+        Location location = new Location("Dublin_IE", 53.3331, -6.2489);
+        Account account = new Account("amy@gmail.com", "Amy", "Murphy", "amurphy1", new Locale("en", "IE"), LocalDate.of(1980, 1, 1), location);
         when(accountRepository.save(account)).thenReturn(account);
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/accounts").contentType("application/json").content("{\"email\":\"amy@gmail.com\", \"firstName\":\"Amy\", \"lastName\":\"Murphy\", \"username\":\"amurphy1\", \"country\":\"en_IE\", \"dob\":\"1980_1_1\"}".getBytes())).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.username").value("amurphy1"));
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/accounts").contentType("application/json").content("{\"email\":\"amy@gmail.com\", \"firstName\":\"Amy\", \"lastName\":\"Murphy\", \"username\":\"amurphy1\", \"country\":\"en_IE\", \"dob\":\"1980_1_1\", \"location\":\"Dublin_IE 53.339428 -6.257664\"}".getBytes())).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.username").value("amurphy1"));
     }
 
     @Test
     public void updateAccountShouldUpdate() throws Exception {
-        when(accountRepository.findById(2L)).thenReturn(Optional.of(new Account("bob@gmail.com", "Bob", "Dylan", "bdylan1", new Locale("en", "IE"), LocalDate.of(1960, 1, 1))));
-        this.mockMvc.perform(MockMvcRequestBuilders.put("/accounts/2").contentType("application/json").content("{\"email\":\"bob@gmail.com\", \"firstName\":\"Bob\", \"lastName\":\"Dylan\", \"username\":\"dylan1bob\", \"country\":\"en_IE\", \"dob\":\"1960_1_1\"}".getBytes())).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.username").value("dylan1bob"));
+        when(accountRepository.findById(2L)).thenReturn(Optional.of(new Account("bob@gmail.com", "Bob", "Dylan", "bdylan1", new Locale("en", "IE"), LocalDate.of(1960, 1, 1), new Location("Dublin_IE", 53.3331, -6.2489))));
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/accounts/2").contentType("application/json").content("{\"email\":\"bob@gmail.com\", \"firstName\":\"Bob\", \"lastName\":\"Dylan\", \"username\":\"dylan1bob\", \"country\":\"en_IE\", \"dob\":\"1960_1_1\", \"location\":\"Dublin_IE 53.339428 -6.257664\"}".getBytes())).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.username").value("dylan1bob"));
 
     }
 
     @Test
     public void updateAccountShouldErrorIfNoMatch() throws Exception {
         when(accountRepository.findById(2L)).thenReturn(Optional.empty());
-        this.mockMvc.perform(MockMvcRequestBuilders.put("/accounts/2").contentType("application/json").content("{\"email\":\"bob@gmail.com\", \"firstName\":\"Bob\", \"lastName\":\"Dylan\", \"username\":\"dylan1bob\", \"country\":\"en_IE\", \"dob\":\"1960_1_1\"}".getBytes())).andDo(print()).andExpect(status().is4xxClientError());
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/accounts/2").contentType("application/json").content("{\"email\":\"bob@gmail.com\", \"firstName\":\"Bob\", \"lastName\":\"Dylan\", \"username\":\"dylan1bob\", \"country\":\"en_IE\", \"dob\":\"1960_1_1\", \"location\":\"Dublin_IE 53.339428 -6.257664\"}".getBytes())).andDo(print()).andExpect(status().is4xxClientError());
     }
 
     @Test
     public void deleteAccountShouldDelete() throws Exception {
-        when(accountRepository.findById(2L)).thenReturn(Optional.of(new Account("bob@gmail.com", "Bob", "Dylan", "bdylan1", new Locale("en", "IE"), LocalDate.of(1960, 1, 1))));
+        when(accountRepository.findById(2L)).thenReturn(Optional.of(new Account("bob@gmail.com", "Bob", "Dylan", "bdylan1", new Locale("en", "IE"), LocalDate.of(1960, 1, 1), new Location("Dublin_IE", 53.3331, -6.2489))));
         this.mockMvc.perform(MockMvcRequestBuilders.delete("/accounts/2")).andDo(print()).andExpect(status().isOk());
     }
 }

@@ -17,7 +17,7 @@ public class RoomController {
     private final RoomRepository roomRepository;
     private final MessageRepository msgRepository;
 
-    RoomController(AccountRepository accountRepository, RoomRepository roomRepository, MessageRepository msgRepository) {
+    RoomController(RoomRepository roomRepository, MessageRepository msgRepository) {
         this.roomRepository = roomRepository;
         this.msgRepository = msgRepository;
     }

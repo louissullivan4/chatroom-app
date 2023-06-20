@@ -27,7 +27,7 @@ class LoadDatabase {
             log.info("Preloading " + accountRepository.save(new Account("bob@gmail.com", "Bob", "Dylan", "bdylan1", new Locale("en", "IE"), LocalDate.of(1960, 1, 1))));
             log.info("Preloading " + roomRepository.save(new Room("Peanut Butter","1")));
             log.info("Preloading " + roomRepository.save(new Room("Jelly","2")));
-            log.info("Preloading " + msgRepository.save(new Message("Hey Friend!", 2L, 2L)));
+            log.info("Preloading " + msgRepository.save(new Message("Hey Friend!", 1L, 1L)));
             log.info("Preloading " + msgRepository.save(new Message("This rocks!", 2L, 2L)));
         };
     }

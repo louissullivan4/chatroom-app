@@ -1,6 +1,8 @@
 package com.example.demo;
 
+import com.example.demo.model.Message;
 import com.example.demo.model.Room;
+import com.example.demo.repository.MessageRepository;
 import com.example.demo.repository.RoomRepository;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,9 @@ public class RoomControllerTests {
 
     @MockBean
     private RoomRepository roomRepository;
+
+    @MockBean
+    private MessageRepository messageRepository;
 
     @Test
     public void allRoomsShouldCallRepository() throws Exception {
@@ -63,5 +68,23 @@ public class RoomControllerTests {
         this.mockMvc.perform(MockMvcRequestBuilders.put("/rooms/1").contentType("application/json").content("{\"hostId\":\"123\", \"topic\":\"testTopic\"}")).andDo(print()).andExpect(status().is4xxClientError());
     }
 
+    @Test
+    public void createMessageShouldCreateMessage() throws Exception {
+        Room room = new Room("testTopic", "123");
+        when(roomRepository.save(room)).thenReturn(room);
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/messages")
+                .contentType("application/json")
+                .content("{\"content\":\"I love cheese\", \"accountId\":\"1\", \"roomId\":\"1\"}"))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").value("I love cheese"));
+    }
+
+    @Test
+    public void allRoomMessagesShouldReturnAllMessages() throws Exception {
+        Room room = new Room("testTopic", "123");
+        when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
+        when(messageRepository.findByRoomId(1L)).thenReturn(new ArrayList<>(Arrays.asList(new Message("I love cheese", 1L, 1L), new Message("I love cheese", 1L, 1L))));
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/rooms/1/messages")).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$", Matchers.hasSize(2)));
+    }
 
 }

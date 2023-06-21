@@ -39,7 +39,7 @@ public class RoomControllerTests {
 
     @Test
     public void getAllRooms_DBHasValues_ReturnsValues() throws Exception {
-        Room room1 = new Room("Peanut Butter","1",new Location("Dublin_IE", 53.3331, -6.2489));
+        Room room1 = new Room("Peanut Butter","1",new Location(53.3331, -6.2489));
         ArrayList<Room> rooms = new ArrayList<>();
         rooms.add(room1);
         when(roomRepository.findAll()).thenReturn(rooms);
@@ -48,7 +48,7 @@ public class RoomControllerTests {
 
     @Test
     public void getRoomById_RoomWithIdPresent_ReturnsValues() throws Exception {
-        when(roomRepository.findById(1L)).thenReturn(Optional.of(new Room("1", "1", new Location("Dublin_IE", 53.3331, -6.2489))));
+        when(roomRepository.findById(1L)).thenReturn(Optional.of(new Room("1", "1", new Location(53.3331, -6.2489))));
         this.mockMvc.perform(MockMvcRequestBuilders.get("/rooms/1")).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.topic").value("1"));
     }
 
@@ -60,27 +60,27 @@ public class RoomControllerTests {
 
     @Test
     public void createRoom_RequestIsCorrect_IsCreated() throws Exception {
-        Room room = new Room("testTopic", "123", new Location("Dublin_IE", 53.3331, -6.2489));
+        Room room = new Room("testTopic", "123", new Location(53.3331, -6.2489));
         when(roomRepository.save(room)).thenReturn(room);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/rooms").contentType("application/json").content("{\"hostId\":\"123\", \"topic\":\"testTopic\", \"location\":\"Dublin_IE 53.339428 -6.257664\"}")).andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.hostId").value("123"));
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/rooms").contentType("application/json").content("{\"hostId\":\"123\", \"topic\":\"testTopic\", \"location\":{\"latitude\":\"53.3331\", \"longitude\":\"-6.2489\" }}")).andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.hostId").value("123"));
     }
 
     @Test
     public void updateRoom_RoomWithIdIsPresent_RoomUpdated() throws Exception {
-        when(roomRepository.findById(1L)).thenReturn(Optional.of(new Room("testTopic", "456", new Location("Dublin_IE", 53.3331, -6.2489))));
-        this.mockMvc.perform(MockMvcRequestBuilders.put("/rooms/1").contentType("application/json").content("{\"hostId\":\"123\", \"topic\":\"testTopic\",\"location\":\"Dublin_IE 53.339428 -6.257664\"}")).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.hostId").value("123"));
+        when(roomRepository.findById(1L)).thenReturn(Optional.of(new Room("testTopic", "456", new Location(53.3331, -6.2489))));
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/rooms/1").contentType("application/json").content("{\"hostId\":\"123\", \"topic\":\"testTopic\", \"location\":{\"latitude\":\"53.3331\", \"longitude\":\"-6.2489\" }}")).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.hostId").value("123"));
     }
 
     @Test
     public void updateRoom_RoomWithIdIsNotPresent_ThrowsClientError() throws Exception {
         when(roomRepository.findById(1L)).thenReturn(Optional.empty());
-        this.mockMvc.perform(MockMvcRequestBuilders.put("/rooms/1").contentType("application/json").content("{\"hostId\":\"123\", \"topic\":\"testTopic\", \"location\":\"Dublin_IE 53.339428 -6.257664\"}")).andDo(print()).andExpect(status().is4xxClientError());
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/rooms/1").contentType("application/json").content("{\"hostId\":\"123\", \"topic\":\"testTopic\", \"location\":{\"latitude\":\"53.3331\", \"longitude\":\"-6.2489\" }}")).andDo(print()).andExpect(status().is4xxClientError());
     }
 
     @Test
     public void createMessageShouldCreateMessage() throws Exception {
-        Location location = new Location("Dublin_IE", 53.3331, -6.2489);
+        Location location = new Location(53.3331, -6.2489);
         Room room = new Room("testTopic", "123", location);
         when(roomRepository.save(room)).thenReturn(room);
         this.mockMvc.perform(MockMvcRequestBuilders.post("/messages")
@@ -92,7 +92,7 @@ public class RoomControllerTests {
 
     @Test
     public void allRoomMessagesShouldReturnAllMessages() throws Exception {
-        Location location = new Location("Dublin_IE", 53.3331, -6.2489);
+        Location location = new Location(53.3331, -6.2489);
         Room room = new Room("testTopic", "123", location);
         when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
         when(messageRepository.findByRoomId(1L)).thenReturn(new ArrayList<>(Arrays.asList(new Message("I love cheese", 1L, 1L), new Message("I love cheese", 1L, 1L))));

@@ -15,7 +15,6 @@ public class Account {
     private @Column String firstName;
     private @Column String lastName;
     private @Column String username;
-    private @Column Locale country;
     private @Column LocalDate dob;
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "accounts")
     @JsonIgnore
@@ -23,12 +22,11 @@ public class Account {
     @OneToOne(cascade = CascadeType.ALL)
     private Location location;
 
-    public Account(String email, String firstName, String lastName, String username, Locale country, LocalDate dob, Location location) {
+    public Account(String email, String firstName, String lastName, String username, LocalDate dob, Location location) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
-        this.country = country;
         this.dob = dob;
         this.location = location;
     }
@@ -76,14 +74,6 @@ public class Account {
         this.username = username;
     }
 
-    public Locale getCountry() {
-        return country;
-    }
-
-    public void setCountry(Locale country) {
-        this.country = country;
-    }
-
     public LocalDate getDob() {
         return dob;
     }
@@ -108,31 +98,11 @@ public class Account {
         this.location = location;
     }
 
-    // Methods
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof Account account))
-            return false;
-        return Objects.equals(this.id, account.id) && Objects.equals(this.email, account.email)
-                && Objects.equals(this.firstName, account.firstName)
-                && Objects.equals(this.lastName, account.lastName)
-                && Objects.equals(this.username, account.username)
-                && Objects.equals(this.country, account.country)
-                && Objects.equals(this.dob, account.dob);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id, this.email, this.firstName, this.lastName, this.username, this.country, this.dob);
-    }
-
     @Override
     public String toString() {
         return "{" + "id=" + this.id + ", email='" + this.email + '\'' + ", firstName='" + this.firstName + '\'' +
-                ", lastName='" + this.lastName + '\'' + ", username='" + this.username + '\'' + ", country='" +
-                this.country + '\'' + ", dob='" + this.dob + '\'' + ", location='" + this.location + '\'' + '}';
+                ", lastName='" + this.lastName + '\'' + ", username='" + this.username + '\'' + ", dob='"
+                + this.dob + '\'' + ", location='" + this.location + '\'' + '}';
     }
 
     // Create new account or update details by parsing json values to strings and locale and localdate types
@@ -149,9 +119,6 @@ public class Account {
         if (request.get("username") == null) {
             throw new RequestMissingParameterException("username");
         }
-        if (request.get("country") == null) {
-            throw new RequestMissingParameterException("country");
-        }
         if (request.get("dob") == null) {
             throw new RequestMissingParameterException("dob");
         }
@@ -162,7 +129,6 @@ public class Account {
         this.setFirstName(request.get("firstName"));
         this.setLastName(request.get("lastName"));
         this.setUsername(request.get("username"));
-        this.setCountry(new Locale(request.get("country").split("_")[0], request.get("country").split("_")[1]));
         this.setDob(LocalDate.of(Integer.parseInt(request.get("dob").split("_")[0]),
                 Integer.parseInt(request.get("dob").split("_")[1]),
                 Integer.parseInt(request.get("dob").split("_")[2])));

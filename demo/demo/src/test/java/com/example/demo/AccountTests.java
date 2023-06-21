@@ -2,6 +2,8 @@ package com.example.demo;
 
 import com.example.demo.errors.server.RequestMissingParameterException;
 import com.example.demo.model.Account;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -13,32 +15,45 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+
+
 @SpringBootTest
 public class AccountTests {
 
     @Test
     void newAccountDetailsUpdatesValues() throws RequestMissingParameterException {
         Account account = new Account();
-        Map<Object, String> request = new HashMap<>();
-        request.put("email", "tim@gmail.com");
-        request.put("firstName", "Tim");
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode request = objectMapper.createObjectNode();
+        request.put("email", "amy@gmail.com");
+        request.put("firstName", "Amy");
         request.put("lastName", "Smith");
-        request.put("username", "timmy1");
-        request.put("dob", "1990_01_01");
-        request.put("location", "Dublin_IE 53.3331 -6.2489");
-        account.newAccountDetails(request);
-        assertEquals("tim@gmail.com", account.getEmail());
-        assertEquals("Tim", account.getFirstName());
-        assertEquals("Smith", account.getLastName());
-        assertEquals("timmy1", account.getUsername());
-        assertEquals(LocalDate.of(1990, 1, 1),  account.getDob());
+        request.put("username", "asmith1");
+        ObjectNode dob = objectMapper.createObjectNode();
+        dob.put("year", 1990);
+        dob.put("month", 1);
+        dob.put("day", 1);
+        request.set("dob", dob);
+        ObjectNode location = objectMapper.createObjectNode();
+        location.put("latitude", 51.5074);
+        location.put("longitude", 0.1278);
+        request.set("location", location);
+        Account updatedAccount = account.newAccountDetails(request);
+        assertEquals("amy@gmail.com", updatedAccount.getEmail());
+        assertEquals("Amy", updatedAccount.getFirstName());
+        assertEquals("Smith", updatedAccount.getLastName());
+        assertEquals("asmith1", updatedAccount.getUsername());
+        assertEquals(LocalDate.of(1990, 1, 1), updatedAccount.getDob());
+        assertEquals(51.5074, updatedAccount.getLocation().getLatitude());
+        assertEquals(0.1278, updatedAccount.getLocation().getLongitude());
     }
 
     @Test
     void newAccountDetailsThrowsErrorIfIncorrectParameter() throws RequestMissingParameterException {
         Account account = new Account();
-        Map<Object, String> request = new HashMap<>();
-        request.put("malformed", "tim@gmail.com");
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode request = objectMapper.createObjectNode();
+        request.put("malformed", "123");
         assertThrows(RequestMissingParameterException.class, () -> {account.newAccountDetails(request);});
     }
 }

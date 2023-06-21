@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 import com.example.demo.errors.server.RequestMissingParameterException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -102,11 +103,10 @@ public class Account {
     public String toString() {
         return "{" + "id=" + this.id + ", email='" + this.email + '\'' + ", firstName='" + this.firstName + '\'' +
                 ", lastName='" + this.lastName + '\'' + ", username='" + this.username + '\'' + ", dob='"
-                + this.dob + '\'' + ", location='" + this.location + '\'' + '}';
+                + this.dob + '\'' + ", location='" + this.location.toString() + '\'' + '}';
     }
 
-    // Create new account or update details by parsing json values to strings and locale and localdate types
-    public Account newAccountDetails(@RequestBody Map<Object, String> request) throws RequestMissingParameterException {
+    public Account newAccountDetails(@RequestBody JsonNode request) throws RequestMissingParameterException {
         if (request.get("email") == null) {
             throw new RequestMissingParameterException("email");
         }
@@ -125,16 +125,14 @@ public class Account {
         if (request.get("location") == null) {
             throw new RequestMissingParameterException("location");
         }
-        this.setEmail(request.get("email"));
-        this.setFirstName(request.get("firstName"));
-        this.setLastName(request.get("lastName"));
-        this.setUsername(request.get("username"));
-        this.setDob(LocalDate.of(Integer.parseInt(request.get("dob").split("_")[0]),
-                Integer.parseInt(request.get("dob").split("_")[1]),
-                Integer.parseInt(request.get("dob").split("_")[2])));
-        this.setLocation(new Location(request.get("location").split(" ")[0],
-                Double.parseDouble(request.get("location").split(" ")[1]),
-                Double.parseDouble(request.get("location").split(" ")[2])));
+        this.setEmail(request.get("email").asText());
+        this.setFirstName(request.get("firstName").asText());
+        this.setLastName(request.get("lastName").asText());
+        this.setUsername(request.get("username").asText());
+        JsonNode dob = request.get("dob");
+        this.setDob(LocalDate.of(dob.get("year").asInt(), dob.get("month").asInt(), dob.get("day").asInt()));
+        JsonNode location = request.get("location");
+        this.setLocation(new Location(location.get("latitude").asDouble(), location.get("longitude").asDouble()));
         return this;
     }
 }

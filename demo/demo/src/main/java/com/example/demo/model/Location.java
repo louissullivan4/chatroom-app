@@ -10,12 +10,10 @@ import jakarta.persistence.Id;
 public class Location {
     private @Id
     @GeneratedValue Long id;
-    private @Column String name;
     private @Column double longitude;
     private @Column double latitude;
 
-    public Location(String name, double latitude, double longitude) {
-        this.name = name;
+    public Location(double latitude, double longitude) {
         this.latitude  = latitude;
         this.longitude = longitude;
     }
@@ -38,7 +36,7 @@ public class Location {
     }
 
     public String toString() {
-        return name + " (" + latitude + ", " + longitude + ")";
+        return "{" + "id=" + this.id + ", latitude='" + this.latitude + '\'' + ", longitude='" + this.longitude + '\'' + '}';
     }
 }
 

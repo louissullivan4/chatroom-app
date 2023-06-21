@@ -9,6 +9,7 @@ import com.example.demo.model.RecommendationService;
 import com.example.demo.model.Room;
 import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.RoomRepository;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.example.demo.repository.MessageRepository;
@@ -83,7 +84,7 @@ public class AccountController {
     }
 
     @PostMapping("/accounts")
-    ResponseEntity<Account> addNewAccount(@RequestBody Map<Object, String> request) {
+    ResponseEntity<Account> addNewAccount(@RequestBody JsonNode request) {
         Account account = new Account();
         account.newAccountDetails(request);
         accountRepository.save(account);
@@ -91,7 +92,7 @@ public class AccountController {
     }
 
     @PutMapping("/accounts/{id}")
-    ResponseEntity<Account> updateAccount(@RequestBody Map<Object, String> request, @PathVariable Long id) throws AccountNotFoundException {
+    ResponseEntity<Account> updateAccount(@RequestBody JsonNode request, @PathVariable Long id) throws AccountNotFoundException {
         if (accountRepository.findById(id).isEmpty()) {
             throw new AccountNotFoundException(id);
         } else {

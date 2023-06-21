@@ -7,6 +7,7 @@ import com.example.demo.model.Room;
 import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.MessageRepository;
 import com.example.demo.repository.RoomRepository;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,7 @@ public class RoomController {
     }
 
     @PostMapping("/rooms")
-    ResponseEntity createRoom(@RequestBody Map<Object, String> request) {
+    ResponseEntity createRoom(@RequestBody JsonNode request) {
         Room _room = new Room();
         try {
             _room.setRoomsDetails(request);
@@ -53,7 +54,7 @@ public class RoomController {
     }
 
     @PutMapping("/rooms/{id}")
-    ResponseEntity<Room> updateRoom(@RequestBody Map<Object, String> request, @PathVariable Long id) throws RoomNotFoundException {
+    ResponseEntity<Room> updateRoom(@RequestBody JsonNode request, @PathVariable Long id) throws RoomNotFoundException {
         Room _room = roomRepository.findById(id).orElseThrow(() -> new RoomNotFoundException(id));
         _room.setRoomsDetails(request);
         roomRepository.save(_room);

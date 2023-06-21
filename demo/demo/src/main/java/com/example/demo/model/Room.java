@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import com.example.demo.errors.server.RequestMissingParameterException;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -30,18 +31,17 @@ public class Room {
         this.location = location;
     }
 
-    public Room setRoomsDetails(@RequestBody Map<Object, String> request) throws RequestMissingParameterException {
+    public Room setRoomsDetails(@RequestBody JsonNode request) throws RequestMissingParameterException {
         if (request.get("hostId") == null) {
             throw new RequestMissingParameterException("hostId");
         }
         if (request.get("topic") == null) {
             throw new RequestMissingParameterException("topic");
         }
-        this.setHostId(request.get("hostId"));
-        this.setTopic(request.get("topic"));
-        this.setLocation(new Location(request.get("location").split(" ")[0],
-                Double.parseDouble(request.get("location").split(" ")[1]),
-                Double.parseDouble(request.get("location").split(" ")[2])));
+        this.setHostId(request.get("hostId").asText());
+        this.setTopic(request.get("topic").asText());
+        JsonNode location = request.get("location");
+        this.setLocation(new Location(location.get("latitude").asDouble(), location.get("longitude").asDouble()));
         return this;
     }
 

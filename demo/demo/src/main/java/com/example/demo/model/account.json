@@ -1,0 +1,15 @@
+{
+  "email": "amy@gmail.com",
+  "firstName": "Amy",
+  "lastName": "Murphy",
+  "username": "amurphy1",
+  "dob": {
+    "year": "1990",
+    "month": "1",
+    "day": "1"
+  },
+  "location": {
+    "latitude": "53.339428",
+    "longitude": "-6.257664"
+  }
+}

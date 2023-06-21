@@ -24,7 +24,6 @@ public class AccountTests {
         request.put("firstName", "Tim");
         request.put("lastName", "Smith");
         request.put("username", "timmy1");
-        request.put("country", "en_IE");
         request.put("dob", "1990_01_01");
         request.put("location", "Dublin_IE 53.3331 -6.2489");
         account.newAccountDetails(request);
@@ -32,7 +31,6 @@ public class AccountTests {
         assertEquals("Tim", account.getFirstName());
         assertEquals("Smith", account.getLastName());
         assertEquals("timmy1", account.getUsername());
-        assertEquals(new Locale("en","IE"), account.getCountry());
         assertEquals(LocalDate.of(1990, 1, 1),  account.getDob());
     }
 

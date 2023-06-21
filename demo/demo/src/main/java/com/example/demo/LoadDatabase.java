@@ -26,8 +26,8 @@ class LoadDatabase {
         return args -> {
             Location locA = new Location("Cork_IE", 51.8969, -8.4863);
             Location locB = new Location("Istanbul_TR", 41.0082, 28.9784);
-            log.info("Preloading " + accountRepository.save(new Account("louis@gmail.com", "Louis", "Sullvian", "lsullivan1", new Locale("en", "IE"), LocalDate.of(2001, 5, 16), locA)));
-            log.info("Preloading " + accountRepository.save(new Account("bob@gmail.com", "Bob", "Dylan", "bdylan1", new Locale("en", "IE"), LocalDate.of(1960, 1, 1), locB)));
+            log.info("Preloading " + accountRepository.save(new Account("louis@gmail.com", "Louis", "Sullvian", "lsullivan1", LocalDate.of(2001, 5, 16), locA)));
+            log.info("Preloading " + accountRepository.save(new Account("bob@gmail.com", "Bob", "Dylan", "bdylan1", LocalDate.of(1960, 1, 1), locB)));
 
             Location loc1 = new Location("Berlin_DE", 52.5200, 13.4050);
             Location loc3 = new Location("Galway_IE", 53.2707, -9.0568);

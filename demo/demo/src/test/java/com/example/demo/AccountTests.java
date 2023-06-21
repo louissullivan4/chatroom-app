@@ -26,6 +26,7 @@ public class AccountTests {
         request.put("username", "timmy1");
         request.put("country", "en_IE");
         request.put("dob", "1990_01_01");
+        request.put("location", "Dublin_IE 53.3331 -6.2489");
         account.newAccountDetails(request);
         assertEquals("tim@gmail.com", account.getEmail());
         assertEquals("Tim", account.getFirstName());

@@ -45,7 +45,7 @@ public class AccountControllerTests {
 
     @Test
     public void getAllRooms_DBHasValues_ReturnsValues() throws Exception {
-        Account account = new Account("louis@gmail.com", "Louis", "Sullvian", "lsullivan1", new Locale("en", "IE"), LocalDate.of(2001, 5, 16));
+        Account account = new Account("louis@gmail.com", "Louis", "Sullvian", "lsullivan1", new Locale("en", "IE"), LocalDate.of(2001, 5, 16), new Location("Dublin_IE", 53.3331, -6.2489));
         ArrayList<Account> accounts = new ArrayList<>();
         accounts.add(account);
         when(accountRepository.findAll()).thenReturn(accounts);
@@ -62,7 +62,7 @@ public class AccountControllerTests {
     public void getAllAccountsByRoomId_RoomWithThatIdPresent_ReturnsAccounts() throws Exception {
         when(roomRepository.existsById(1L)).thenReturn(true);
         ArrayList<Account> accounts = new ArrayList<>();
-        accounts.add(new Account("louis@gmail.com", "Louis", "Sullvian", "lsullivan1", new Locale("en", "IE"), LocalDate.of(2001, 5, 16)));
+        accounts.add(new Account("louis@gmail.com", "Louis", "Sullvian", "lsullivan1", new Locale("en", "IE"), LocalDate.of(2001, 5, 16), new Location("Dublin_IE", 53.3331, -6.2489)));
         when(accountRepository.findAccountsByRoomsId(1L)).thenReturn(accounts);
         this.mockMvc.perform(MockMvcRequestBuilders.get("/rooms/1/accounts")).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$[0].firstName").value("Louis"));
     }
@@ -98,7 +98,7 @@ public class AccountControllerTests {
     public void addAccountToRoom_AccountAndRoomExist_AccountAdded() throws Exception {
         Account account = new Account("louis@gmail.com", "Louis", "Sullvian", "lsullivan1", new Locale("en", "IE"), LocalDate.of(2001, 5, 16),new Location("Dublin_IE", 53.3331, -6.2489));
         account.setId(1L);
-        when(roomRepository.findById(1L)).thenReturn(Optional.of(new Room("Peanut Butter", "1")));
+        when(roomRepository.findById(1L)).thenReturn(Optional.of(new Room("Peanut Butter", "1", new Location("Dublin_IE", 53.3331, -6.2489))));
         when(accountRepository.findById(1L)).thenReturn(Optional.of(account));
         this.mockMvc.perform(MockMvcRequestBuilders.post("/rooms/1/accounts")
                 .content(TestUtil.asJsonString(account))
@@ -119,7 +119,7 @@ public class AccountControllerTests {
     @Test
     public void updateAccount_AccountWithIdIsPresent_UpdatesAccount() throws Exception {
         when(accountRepository.findById(2L)).thenReturn(Optional.of(new Account("bob@gmail.com", "Bob", "Dylan", "bdylan1", new Locale("en", "IE"), LocalDate.of(1960, 1, 1), new Location("Dublin_IE", 53.3331, -6.2489))));
-        this.mockMvc.perform(MockMvcRequestBuilders.put("/accounts/2").contentType("application/json").content("{\"email\":\"bob@gmail.com\", \"firstName\":\"Bob\", \"lastName\":\"Dylan\", \"username\":\"dylan1bob\", \"country\":\"en_IE\", \"dob\":\"1960_1_1\"}"
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/accounts/2").contentType("application/json").content("{\"email\":\"bob@gmail.com\", \"firstName\":\"Bob\", \"lastName\":\"Dylan\", \"username\":\"dylan1bob\", \"country\":\"en_IE\", \"dob\":\"1960_1_1\", \"location\":\"Dublin_IE 53.339428 -6.257664\"}"
                         .getBytes()))
                 .andDo(print())
                 .andExpect(status().isOk())

@@ -63,21 +63,13 @@ public class RoomControllerTests {
         Room room = new Room("testTopic", "123", new Location("Dublin_IE", 53.3331, -6.2489));
         when(roomRepository.save(room)).thenReturn(room);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/rooms").contentType("application/json").content("{\"hostId\":\"123\", \"topic\":\"testTopic\"}")).andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.hostId").value("123"));
-    }
-
-    @Test
-    public void createRoom_RequestIsIncorrect_IsCreated() throws Exception {
-        Room room = new Room("testTopic", "123", new Location("Dublin_IE", 53.3331, -6.2489));
-        when(roomRepository.save(room)).thenReturn(room);
-
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/rooms").contentType("application/json").content("{\"hostId\":\"123\", \"topic\":\"testTopic\"}")).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.hostId").value("123"));
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/rooms").contentType("application/json").content("{\"hostId\":\"123\", \"topic\":\"testTopic\", \"location\":\"Dublin_IE 53.339428 -6.257664\"}")).andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.hostId").value("123"));
     }
 
     @Test
     public void updateRoom_RoomWithIdIsPresent_RoomUpdated() throws Exception {
-        when(roomRepository.findById(1L)).thenReturn(Optional.of(new Room("testTopic", "456")));
-        this.mockMvc.perform(MockMvcRequestBuilders.put("/rooms/1").contentType("application/json").content("{\"hostId\":\"123\", \"topic\":\"testTopic\"}")).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.hostId").value("123"));
+        when(roomRepository.findById(1L)).thenReturn(Optional.of(new Room("testTopic", "456", new Location("Dublin_IE", 53.3331, -6.2489))));
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/rooms/1").contentType("application/json").content("{\"hostId\":\"123\", \"topic\":\"testTopic\",\"location\":\"Dublin_IE 53.339428 -6.257664\"}")).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.hostId").value("123"));
     }
 
     @Test

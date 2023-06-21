@@ -1,77 +1,68 @@
 package com.example.demo.controller;
 
+import com.example.demo.errors.server.RequestMissingParameterException;
 import com.example.demo.errors.server.RoomNotFoundException;
 import com.example.demo.model.Message;
 import com.example.demo.model.Room;
 import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.MessageRepository;
 import com.example.demo.repository.RoomRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 public class RoomController {
-
     private final RoomRepository roomRepository;
-    private final MessageRepository msgRepository;
-
-    RoomController(RoomRepository roomRepository, MessageRepository msgRepository) {
+    RoomController(RoomRepository roomRepository) {
         this.roomRepository = roomRepository;
-        this.msgRepository = msgRepository;
     }
 
-    // Get all rooms
     @GetMapping("/rooms")
-    List<Room> allRooms() {
-        return roomRepository.findAll();
+    ResponseEntity<List<Room>> getAllRooms() {
+        List<Room> rooms = new ArrayList<Room>();
+        roomRepository.findAll().forEach(rooms::add);
+
+        if (rooms.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(rooms, HttpStatus.OK);
     }
 
-    // Get one room by ID
     @GetMapping("/rooms/{id}")
-    Room oneRoom(@PathVariable Long id) {
-        return roomRepository.findById(id)
-                .orElseThrow(() -> new RoomNotFoundException(id));
+    ResponseEntity<Room> getRoomById(@PathVariable Long id) {
+        Room room = roomRepository.findById(id).orElseThrow(() -> new RoomNotFoundException(id));
+        return new ResponseEntity<>(room, HttpStatus.OK);
     }
 
     @PostMapping("/rooms")
-    Room newRoom(@RequestBody Map<Object, String> request) {
-        Room room = new Room();
-        room.setRoomsDetails(request);
-        roomRepository.save(room);
-        return room;
-    }
-
-    @PutMapping("/rooms/{id}")
-    Room updateRoom(@RequestBody Map<Object, String> request, @PathVariable Long id) throws RoomNotFoundException {
-        if (roomRepository.findById(id).isEmpty()) {
-            throw new RoomNotFoundException(id);
-        } else {
-            Room room = roomRepository.findById(id).get();
-            room.setRoomsDetails(request);
-            roomRepository.save(room);
-            return room;
+    ResponseEntity createRoom(@RequestBody Map<Object, String> request) {
+        Room _room = new Room();
+        try {
+            _room.setRoomsDetails(request);
+            return new ResponseEntity<>(_room, HttpStatus.CREATED);
+        }
+        catch (RequestMissingParameterException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
         }
     }
 
+    @PutMapping("/rooms/{id}")
+    ResponseEntity<Room> updateRoom(@RequestBody Map<Object, String> request, @PathVariable Long id) throws RoomNotFoundException {
+        Room _room = roomRepository.findById(id).orElseThrow(() -> new RoomNotFoundException(id));
+        _room.setRoomsDetails(request);
+        roomRepository.save(_room);
+        return new ResponseEntity<>(_room, HttpStatus.OK);
+    }
+
     @DeleteMapping("/rooms/{id}")
-    void deleteRoom(@PathVariable Long id) {
+    ResponseEntity<HttpStatus> deleteRoom(@PathVariable Long id) {
         roomRepository.deleteById(id);
-    }
-
-    // Get all messages in a room
-    @GetMapping("/rooms/{id}/messages")
-    List<Message> allRoomMessages(@PathVariable Long id) {
-        return msgRepository.findByRoomId(id);
-    }
-
-    // New Message Sent
-    @PostMapping("/messages")
-    Message createMessage(@RequestBody Map<Object, String> request) {
-        Message message = new Message();
-        message.setMessageDetails(request);
-        msgRepository.save(message);
-        return message;
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

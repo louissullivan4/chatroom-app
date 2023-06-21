@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import com.example.demo.errors.server.RequestMissingParameterException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -18,6 +19,9 @@ public class Account {
     private @Column String username;
     private @Column Locale country;
     private @Column LocalDate dob;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "accounts")
+    @JsonIgnore
+    private Set<Room> rooms = new HashSet<>();
     @OneToOne(cascade = CascadeType.ALL)
     private Location location;
 
@@ -88,6 +92,14 @@ public class Account {
 
     public void setDob(LocalDate dob) {
         this.dob = dob;
+    }
+
+    public Set<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(Set<Room> rooms) {
+        this.rooms = rooms;
     }
 
     public Location getLocation() {

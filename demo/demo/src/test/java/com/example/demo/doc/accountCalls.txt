@@ -15,3 +15,12 @@ curl -H "Content-Type: application/json" -X PUT http://localhost:8080/accounts/2
 
 6. Delete account with id 3
 curl -H "Content-Type: application/json" -X DELETE http://localhost:8080/accounts/3
+
+7. Register Account with id 1 to Room with id 1
+curl -H "Content-Type: application/json" -X POST http://localhost:8080/rooms/1/accounts -d "{\"email\":\"dylan@gmail.com\", \"firstName\":\"Bob\", \"lastName\":\"Dylan\", \"username\":\"bdylan1\", \"country\":\"en_IE\", \"dob\":\"1960-01-01\", \"id\":\"1\"}"
+
+8. Get all Accounts for Room of id 1
+curl localhost:8080/rooms/1/accounts
+
+9. Get all Rooms for Account of id 1
+curl localhost:8080/accounts/1/rooms

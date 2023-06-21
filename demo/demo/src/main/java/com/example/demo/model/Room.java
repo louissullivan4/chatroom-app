@@ -4,8 +4,12 @@ import com.example.demo.errors.server.RequestMissingParameterException;
 import jakarta.persistence.*;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.HashSet;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.Set;
 
 @Entity
 public class Room {
@@ -14,7 +18,11 @@ public class Room {
     private @Column String hostId;
     @OneToOne(cascade = CascadeType.ALL)
     private Location location;
-
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "room_registrations", joinColumns = {@JoinColumn(name = "room_id")},
+            inverseJoinColumns = {@JoinColumn(name = "account_id")})
+    private Set<Account> accounts = new HashSet<>();
 
     public Room(String topic, String hostId, Location location) {
         this.topic = topic;
@@ -92,6 +100,18 @@ public class Room {
         this.location = location;
     }
 
+    public void addAccount(Account account) {
+        this.accounts.add(account);
+        account.getRooms().add(this);
+    }
+
+    public void removeAccount(Long accountId) {
+        Account account = this.accounts.stream().filter(a -> a.getId() == accountId).findFirst().orElse(null);
+        if (account != null) {
+            this.accounts.remove(account);
+            account.getRooms().remove(this);
+        }
+    }
     public Room() {}
 }
 

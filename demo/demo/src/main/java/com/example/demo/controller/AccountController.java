@@ -3,8 +3,11 @@ package com.example.demo.controller;
 import com.example.demo.errors.server.AccountNotFoundException;
 import com.example.demo.model.Account;
 import com.example.demo.model.Message;
+import com.example.demo.model.RecommendationService;
+import com.example.demo.model.Room;
 import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.MessageRepository;
+import com.example.demo.repository.RoomRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,10 +18,13 @@ public class AccountController {
     private final AccountRepository accountRepository;
 
     private final MessageRepository msgRepository;
+    private final RoomRepository roomRepository;
 
-    AccountController(AccountRepository accountRepository, MessageRepository msgRepository) {
+    AccountController(AccountRepository accountRepository, RoomRepository roomRepository, MessageRepository msgRepository) {
         this.accountRepository = accountRepository;
+        this.roomRepository = roomRepository;
         this.msgRepository = msgRepository;
+
     }
     // Get all accounts
     @GetMapping("/accounts")
@@ -64,6 +70,15 @@ public class AccountController {
     @GetMapping("/accounts/{id}/messages")
     List<Message> allAccountMessages(@PathVariable Long id) {
         return msgRepository.findByAccountId(id);
+    }
+
+    // Recommend rooms to a user
+    @GetMapping("/accounts/{id}/recommendations")
+    List<Room> recommendRooms(@PathVariable Long id) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new AccountNotFoundException(id));
+        RecommendationService recommendationService = new RecommendationService();
+        return recommendationService.recommendRooms(account, roomRepository);
     }
 
 }

@@ -12,10 +12,14 @@ public class Room {
     private @Id @GeneratedValue Long id;
     private @Column String topic;    
     private @Column String hostId;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Location location;
 
-    public Room(String topic, String hostId) {
+
+    public Room(String topic, String hostId, Location location) {
         this.topic = topic;
         this.hostId = hostId;
+        this.location = location;
     }
 
     public Room setRoomsDetails(@RequestBody Map<Object, String> request) throws RequestMissingParameterException {
@@ -27,6 +31,9 @@ public class Room {
         }
         this.setHostId(request.get("hostId"));
         this.setTopic(request.get("topic"));
+        this.setLocation(new Location(request.get("location").split(" ")[0],
+                Double.parseDouble(request.get("location").split(" ")[1]),
+                Double.parseDouble(request.get("location").split(" ")[2])));
         return this;
     }
 
@@ -49,6 +56,7 @@ public class Room {
                 "id=" + id +
                 ", topic='" + topic + '\'' +
                 ", hostId='" + hostId + '\'' +
+                ", location='" + location + '\'' +
                 '}';
     }
 
@@ -76,9 +84,15 @@ public class Room {
         this.hostId = hostId;
     }
 
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
     public Room() {}
-
-
 }
 
 

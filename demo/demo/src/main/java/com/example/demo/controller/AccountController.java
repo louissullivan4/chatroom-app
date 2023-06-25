@@ -66,7 +66,6 @@ public class AccountController {
     @PostMapping("/rooms/{id}/accounts/{accountId}")
     ResponseEntity<Account> addAccountToRoom(@PathVariable Long id, @PathVariable Long accountId) {
         Account account = roomRepository.findById(id).map(room -> {
-//           long accountId = accountRequest.getId();
            Account _account = accountRepository.findById(accountId)
                    .orElseThrow(() -> new AccountNotFoundException(id));
            room.addAccount(_account);

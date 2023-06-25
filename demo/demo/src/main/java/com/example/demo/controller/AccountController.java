@@ -23,14 +23,11 @@ import java.util.Map;
 @RestController
 public class AccountController {
     private final AccountRepository accountRepository;
-    private final MessageRepository msgRepository;
     private final RoomRepository roomRepository;
 
-    AccountController(AccountRepository accountRepository, RoomRepository roomRepository, MessageRepository msgRepository) {
+    AccountController(AccountRepository accountRepository, RoomRepository roomRepository) {
         this.accountRepository = accountRepository;
         this.roomRepository = roomRepository;
-        this.msgRepository = msgRepository;
-
     }
 
     @GetMapping("/accounts")
@@ -84,23 +81,23 @@ public class AccountController {
     }
 
     @PostMapping("/accounts")
-    ResponseEntity<Account> addNewAccount(@RequestBody JsonNode request) {
-        Account account = new Account();
-        account.newAccountDetails(request);
-        accountRepository.save(account);
-        return new ResponseEntity<>(account, HttpStatus.CREATED);
+    ResponseEntity<Account> addNewAccount(@RequestBody Account accountRequest) {
+        return new ResponseEntity<>(accountRepository.save(accountRequest), HttpStatus.CREATED);
     }
 
     @PutMapping("/accounts/{id}")
-    ResponseEntity<Account> updateAccount(@RequestBody JsonNode request, @PathVariable Long id) throws AccountNotFoundException {
-        if (accountRepository.findById(id).isEmpty()) {
-            throw new AccountNotFoundException(id);
-        } else {
-            Account account = accountRepository.findById(id).get();
-            account.newAccountDetails(request);
-            accountRepository.save(account);
-            return new ResponseEntity<>(account, HttpStatus.OK);
-        }
+    ResponseEntity<Account> updateAccount(@RequestBody Account accountRequest, @PathVariable Long id) throws AccountNotFoundException {
+        Account _account = accountRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
+        _account.setDob(accountRequest.getDob());
+        _account.setEmail(accountRequest.getEmail());
+        _account.setLocation(accountRequest.getLocation());
+        _account.setRooms(accountRequest.getRooms());
+        _account.setUsername(accountRequest.getUsername());
+        _account.setFirstName(accountRequest.getFirstName());
+        _account.setLastName(accountRequest.getLastName());
+        accountRepository.save(_account);
+        return new ResponseEntity<>(_account, HttpStatus.OK);
+
     }
 
     @DeleteMapping("/accounts/{id}")

@@ -8,16 +8,16 @@ curl localhost:8080/accounts/2
 curl localhost:8080/accounts/3
 
 4. Create a new account
-curl -H "Content-Type: application/json" -X POST http://localhost:8080/accounts -d "{\"email\":\"amy@gmail.com\", \"firstName\":\"Amy\", \"lastName\":\"Murphy\", \"username\":\"amurphy1\", \"country\":\"en_IE\", \"dob\":\"1980_1_1\", \"location\":\"Dublin_IE 53.339428 -6.257664\"}"
+curl -H "Content-Type: application/json" -X POST http://localhost:8080/accounts -d "{\"email\":\"amy@gmail.com\", \"firstName\":\"Amy\", \"lastName\":\"Murphy\", \"username\":\"amurphy1\", \"country\":\"en_IE\", \"dob\":\"1980-01-01\", \"location\":{\"latitude\":\"53.3331\", \"longitude\":\"-6.2489\" }}"
 
 5. Update account with id 2 (email will be updated)
-curl -H "Content-Type: application/json" -X PUT http://localhost:8080/accounts/2 -d "{\"email\":\"dylan@gmail.com\", \"firstName\":\"Bob\", \"lastName\":\"Dylan\", \"username\":\"bdylan1\", \"country\":\"en_IE\", \"dob\":\"1960_1_1\", \"location\":\"Dublin_IE 53.339428 -6.257664\"}"
+curl -H "Content-Type: application/json" -X PUT http://localhost:8080/accounts/2 -d "{\"email\":\"dylan@gmail.com\", \"firstName\":\"Bob\", \"lastName\":\"Dylan\", \"username\":\"bdylan1\", \"country\":\"en_IE\", \"dob\":\"1960-01-01\", \"location\":{\"latitude\":\"53.3331\", \"longitude\":\"-6.2489\" }"
 
 6. Delete account with id 3
 curl -H "Content-Type: application/json" -X DELETE http://localhost:8080/accounts/3
 
 7. Register Account with id 1 to Room with id 1
-curl -H "Content-Type: application/json" -X POST http://localhost:8080/rooms/1/accounts -d "{\"email\":\"dylan@gmail.com\", \"firstName\":\"Bob\", \"lastName\":\"Dylan\", \"username\":\"bdylan1\", \"country\":\"en_IE\", \"dob\":\"1960-01-01\", \"id\":\"1\"}"
+curl -H "Content-Type: application/json" -X POST http://localhost:8080/rooms/1/accounts -d "{\"email\":\"dylan@gmail.com\", \"firstName\":\"Bob\", \"lastName\":\"Dylan\", \"username\":\"bdylan1\", \"country\":\"en_IE\", \"dob\":\"1960-01-01\", \"id\":\"1\", \"location\":{\"latitude\":\"53.3331\", \"longitude\":\"-6.2489\" }}"
 
 8. Get all Accounts for Room of id 1
 curl localhost:8080/rooms/1/accounts

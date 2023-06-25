@@ -7,3 +7,8 @@ curl localhost:8080/rooms/1
 3. Get account with id 2, it will return a not found exception
 curl localhost:8080/rooms/2
 
+4. Create room
+curl -H "Content-Type: application/json" -X POST http://localhost:8080/rooms -d "{\"hostId\":\"123\", \"topic\":\"testTopic\", \"location\":{\"latitude\":\"53.3331\", \"longitude\":\"-6.2489\" }}"
+
+5. Update room with id 2
+curl -H "Content-Type: application/json" -X PUT http://localhost:8080/rooms/2 -d "{\"hostId\":\"12\", \"topic\":\"updatedTopic\", \"location\":{\"latitude\":\"53.3331\", \"longitude\":\"-6.2489\"}}"

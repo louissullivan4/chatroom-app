@@ -16,7 +16,7 @@ import java.util.Set;
 public class Room {
     private @Id @GeneratedValue Long id;
     private @Column String topic;    
-    private @Column String hostId;
+    private @Column() String hostId;
     @OneToOne(cascade = CascadeType.ALL)
     private Location location;
     @ManyToMany(fetch = FetchType.LAZY,

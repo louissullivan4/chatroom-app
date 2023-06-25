@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import com.example.demo.errors.server.RequestMissingParameterException;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
@@ -16,7 +17,7 @@ public class Account {
     private @Column String firstName;
     private @Column String lastName;
     private @Column String username;
-    private @Column LocalDate dob;
+    private @Column @JsonFormat(pattern = "yyyy-MM-dd") LocalDate dob;
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "accounts")
     @JsonIgnore
     private Set<Room> rooms = new HashSet<>();

@@ -5,6 +5,8 @@ import com.example.demo.model.Room;
 import com.example.demo.model.Location;
 import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.RoomRepository;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,13 +14,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -109,17 +114,16 @@ public class AccountControllerTests {
 
     @Test
     public void addNewAccount_CreatesAccount() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/accounts").contentType("application/json").content("{\"email\":\"amy@gmail.com\", \"firstName\":\"Amy\", \"lastName\":\"Murphy\", \"username\":\"amurphy1\", \"dob\":{\"year\": \"2001\", \"month\":\"5\", \"day\":\"16\" }, \"location\":{\"latitude\":\"53.3331\", \"longitude\":\"-6.2489\" } }"
-                        .getBytes()))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.username").value("amurphy1"));
+        Account account = new Account("louis@gmail.com", "Louis", "Sullvian", "lsullivan1", LocalDate.of(2001, 5, 16),new Location(53.3331, -6.2489));
+        when(accountRepository.save(any())).thenReturn(account);
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/accounts").content(TestUtil.asJsonString(account)).contentType(MediaType.APPLICATION_JSON)).andDo(print())
+                .andExpect(status().isCreated()).andExpect(jsonPath("$.firstName").value("Louis"));
     }
 
     @Test
     public void updateAccount_AccountWithIdIsPresent_UpdatesAccount() throws Exception {
         when(accountRepository.findById(2L)).thenReturn(Optional.of(new Account("bob@gmail.com", "Bob", "Dylan", "bdylan1", LocalDate.of(1960, 1, 1), new Location(53.3331, -6.2489))));
-        this.mockMvc.perform(MockMvcRequestBuilders.put("/accounts/2").contentType("application/json").content("{\"email\":\"bob@gmail.com\", \"firstName\":\"Bob\", \"lastName\":\"Dylan\", \"username\":\"dylan1bob\", \"dob\":{\"year\": \"2001\", \"month\":\"5\", \"day\":\"16\" }, \"location\":{\"latitude\":\"53.3331\", \"longitude\":\"-6.2489\" } }"
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/accounts/2").contentType("application/json").content("{\"email\":\"bob@gmail.com\", \"firstName\":\"Bob\", \"lastName\":\"Dylan\", \"username\":\"dylan1bob\", \"dob\":\"2001-05-16\", \"location\":{\"latitude\":\"53.3331\", \"longitude\":\"-6.2489\" } }"
                         .getBytes()))
                 .andDo(print())
                 .andExpect(status().isOk())

@@ -42,21 +42,16 @@ public class RoomController {
     }
 
     @PostMapping("/rooms")
-    ResponseEntity createRoom(@RequestBody JsonNode request) {
-        Room _room = new Room();
-        try {
-            _room.setRoomsDetails(request);
-            return new ResponseEntity<>(_room, HttpStatus.CREATED);
-        }
-        catch (RequestMissingParameterException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
-        }
+    ResponseEntity<Room> createRoom(@RequestBody Room roomRequest) {
+        return new ResponseEntity<>(roomRepository.save(roomRequest), HttpStatus.CREATED);
     }
 
     @PutMapping("/rooms/{id}")
-    ResponseEntity<Room> updateRoom(@RequestBody JsonNode request, @PathVariable Long id) throws RoomNotFoundException {
+    ResponseEntity<Room> updateRoom(@RequestBody Room roomRequest, @PathVariable Long id) throws RoomNotFoundException {
         Room _room = roomRepository.findById(id).orElseThrow(() -> new RoomNotFoundException(id));
-        _room.setRoomsDetails(request);
+        _room.setHostId(roomRequest.getHostId());
+        _room.setTopic(roomRequest.getTopic());
+        _room.setLocation(roomRequest.getLocation());
         roomRepository.save(_room);
         return new ResponseEntity<>(_room, HttpStatus.OK);
     }

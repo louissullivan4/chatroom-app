@@ -4,16 +4,13 @@ import com.example.demo.errors.server.AccountNotFoundException;
 import com.example.demo.errors.server.RoomNotFoundException;
 import com.example.demo.model.Account;
 import com.example.demo.model.Room;
-import com.example.demo.model.Message;
 import com.example.demo.model.RecommendationService;
-import com.example.demo.model.Room;
 import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.RoomRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.example.demo.repository.MessageRepository;
-import com.example.demo.repository.RoomRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,14 +20,11 @@ import java.util.Map;
 @RestController
 public class AccountController {
     private final AccountRepository accountRepository;
-    private final MessageRepository msgRepository;
     private final RoomRepository roomRepository;
 
     AccountController(AccountRepository accountRepository, RoomRepository roomRepository, MessageRepository msgRepository) {
         this.accountRepository = accountRepository;
         this.roomRepository = roomRepository;
-        this.msgRepository = msgRepository;
-
     }
 
     @GetMapping("/accounts")
@@ -49,7 +43,6 @@ public class AccountController {
         if (!roomRepository.existsById(id)) {
             throw new RoomNotFoundException(id);
         }
-
         List<Account> accounts = accountRepository.findAccountsByRoomsId(id);
         return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
@@ -70,10 +63,9 @@ public class AccountController {
         return new ResponseEntity<>(rooms, HttpStatus.OK);
     }
 
-    @PostMapping("/rooms/{id}/accounts")
-    ResponseEntity<Account> addAccountToRoom(@PathVariable Long id, @RequestBody Account accountRequest) {
+    @PostMapping("/rooms/{id}/accounts/{accountId}")
+    ResponseEntity<Account> addAccountToRoom(@PathVariable Long id, @PathVariable Long accountId) {
         Account account = roomRepository.findById(id).map(room -> {
-           long accountId = accountRequest.getId();
            Account _account = accountRepository.findById(accountId)
                    .orElseThrow(() -> new AccountNotFoundException(id));
            room.addAccount(_account);
@@ -117,5 +109,4 @@ public class AccountController {
         RecommendationService recommendationService = new RecommendationService();
         return recommendationService.recommendRooms(account, roomRepository);
     }
-
 }

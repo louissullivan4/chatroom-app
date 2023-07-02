@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.errors.server.RequestMissingParameterException;
 import com.example.demo.errors.server.RoomNotFoundException;
+import com.example.demo.model.Account;
 import com.example.demo.model.Message;
 import com.example.demo.model.Room;
 import com.example.demo.repository.AccountRepository;
@@ -19,8 +20,12 @@ import java.util.Map;
 @RestController
 public class RoomController {
     private final RoomRepository roomRepository;
-    RoomController(RoomRepository roomRepository) {
+    private final AccountRepository accountRepository;
+
+    RoomController(RoomRepository roomRepository,
+                   AccountRepository accountRepository) {
         this.roomRepository = roomRepository;
+        this.accountRepository = accountRepository;
     }
 
     @GetMapping("/rooms")
@@ -60,5 +65,12 @@ public class RoomController {
     ResponseEntity<HttpStatus> deleteRoom(@PathVariable Long id) {
         roomRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/rooms/{id}/totalaccounts")
+    ResponseEntity<Integer> getTotalAccountsByRoomId(@PathVariable Long id) {
+        roomRepository.findById(id).orElseThrow(() -> new RoomNotFoundException(id));
+        List<Account> accounts = accountRepository.findAccountsByRoomsId(id);
+        return new ResponseEntity<>(accounts.size(), HttpStatus.OK);
     }
 }

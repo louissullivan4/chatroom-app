@@ -1,6 +1,8 @@
-package com.example.demo.model;
+package com.example.demo.service;
 
-import com.example.demo.repository.AccountRepository;
+import com.example.demo.model.Account;
+import com.example.demo.model.Location;
+import com.example.demo.model.Room;
 import com.example.demo.repository.RoomRepository;
 
 import java.util.ArrayList;
@@ -31,6 +33,13 @@ public class RecommendationService {
             }
         }
         listRecommendedRooms.addAll(listPopularRooms);
+        // randomise the order of the list
+        for (int i = 0; i < listRecommendedRooms.size(); i++) {
+            int randomIndexToSwap = (int) (Math.random() * listRecommendedRooms.size());
+            Room temp = listRecommendedRooms.get(randomIndexToSwap);
+            listRecommendedRooms.set(randomIndexToSwap, listRecommendedRooms.get(i));
+            listRecommendedRooms.set(i, temp);
+        }
         return listRecommendedRooms;
     }
 }

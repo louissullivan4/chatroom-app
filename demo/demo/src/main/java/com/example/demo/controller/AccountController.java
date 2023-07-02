@@ -4,18 +4,15 @@ import com.example.demo.errors.server.AccountNotFoundException;
 import com.example.demo.errors.server.RoomNotFoundException;
 import com.example.demo.model.Account;
 import com.example.demo.model.Room;
-import com.example.demo.model.RecommendationService;
+import com.example.demo.service.RecommendationService;
 import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.RoomRepository;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import com.example.demo.repository.MessageRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class AccountController {
